@@ -8,11 +8,12 @@ public class SpawnPaintBall : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
-        {
-            PaintBallCtrl ball = Instantiate(paintBall, transform.position, Quaternion.identity);
-            ball.RigidBody.velocity = transform.forward * 5f;
-        }
 
+    }
+
+    public void SpawnBall()
+    {
+        PaintBallCtrl ball = Instantiate(paintBall, transform.position, Quaternion.identity);
+        ball.RigidBody.velocity = transform.forward * 5f;
     }
 }

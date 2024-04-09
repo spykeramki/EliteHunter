@@ -136,6 +136,10 @@ PrefabInstance:
       value: MRUK
       objectReference: {fileID: 0}
     - target: {fileID: 3613868102660323786, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
+      propertyPath: SceneSettings.RoomIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613868102660323786, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
       propertyPath: SceneSettings.DataSource
       value: 0
       objectReference: {fileID: 0}
@@ -733,10 +737,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76943ac7e7394f3e969f0c048b26639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 69e54be2e702f984683fa4816dc4b0f8, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: 4b9557dafe3b6c148b8cd8f9d7b30416, type: 2}
   BorderSize: 0.1
   Colliders: 1
-  castShadows: 0
+  castShadows: 1
   hideMesh: 0
   textureCoordinateModes:
   - U: 0
@@ -892,8 +896,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293518848}
+  - component: {fileID: 1293518849}
   m_Layer: 0
-  m_Name: PassthroughDepth
+  m_Name: ObjectSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -908,12 +913,35 @@ Transform:
   m_GameObject: {fileID: 1293518847}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.167225, y: -8.924966, z: 22.27484}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1293518849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293518847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d14e43228043c04db9e374568cb89a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpawnObject: {fileID: 5365809498565080739, guid: ee7438565f15f4c459db1021b4e56688, type: 3}
+  SpawnAmount: 80
+  MaxIterations: 1000
+  SpawnLocations: 0
+  Labels: -1
+  CheckOverlaps: 1
+  OverrideBounds: -1
+  LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  SurfaceClearanceDistance: 0.1
 --- !u!1001 &2022745532
 PrefabInstance:
   m_ObjectHideFlags: 0
