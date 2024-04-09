@@ -15,7 +15,7 @@ public class BodyCtrl : MonoBehaviour
 
         public void MapTargets()
         {
-            boneTarget.position = vrTarget.position + positionOffset;
+            boneTarget.position = vrTarget.TransformPoint(positionOffset);
             boneTarget.rotation = vrTarget.rotation * Quaternion.Euler(rotationOffset);
         }
     }
