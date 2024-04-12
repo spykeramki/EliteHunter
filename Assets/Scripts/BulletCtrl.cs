@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PaintBallCtrl : MonoBehaviour
+public class BulletCtrl : MonoBehaviour
 {
     private Rigidbody rb;
 

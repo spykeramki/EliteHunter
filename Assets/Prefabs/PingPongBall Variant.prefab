@@ -56,8 +56,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: PingPongBall Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5058694689523111694, guid: b2151d111ebb7114294d9b82456e8358, type: 3}
+      propertyPath: m_TagString
+      value: PaintBall
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4779881054689550583, guid: b2151d111ebb7114294d9b82456e8358, type: 3}
+    - {fileID: 5145015199458577340, guid: b2151d111ebb7114294d9b82456e8358, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
