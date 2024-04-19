@@ -1,10 +1,11 @@
 using Oculus.Interaction;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EventsManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public static UnityEvent Fire = new UnityEvent();
     public static UnityEvent SecondaryFire = new UnityEvent();
@@ -13,6 +14,8 @@ public class EventsManager : MonoBehaviour
     public GrabInteractor leftHandGrabInteractable;
     public DistanceGrabInteractor leftHandDistanceGrabInteractable;
     public DistanceGrabInteractor rightHandDistanceGrabInteractable;
+
+    public NavMeshSurface navMeshSurface;
 
     private void Start()
     {
@@ -25,6 +28,7 @@ public class EventsManager : MonoBehaviour
         rightHandDistanceGrabInteractable.WhenInteractableUnset.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableUnSelected(interactable, true); };
         leftHandDistanceGrabInteractable.WhenInteractableSet.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableSelected(interactable, false); };
         leftHandDistanceGrabInteractable.WhenInteractableUnset.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableUnSelected(interactable, false); };
+
     }
 
     private void Update()
@@ -99,4 +103,8 @@ public class EventsManager : MonoBehaviour
         }
     }
 
+    public void UpdateNavMesh()
+    {
+        navMeshSurface.BuildNavMesh();
+    }
 }
