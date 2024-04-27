@@ -8,7 +8,6 @@ public class TargetCtrl : MonoBehaviour
     {
         if(collision.gameObject.tag == "Bullet")
         {
-            Destroy(collision.gameObject);
             Destroy(gameObject);
         }
     }

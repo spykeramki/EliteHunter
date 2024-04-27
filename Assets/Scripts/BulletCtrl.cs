@@ -11,8 +11,17 @@ public class BulletCtrl : MonoBehaviour
         get { return rb; }
     }
 
+    public GameObject particleEffect;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Instantiate(particleEffect, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 }

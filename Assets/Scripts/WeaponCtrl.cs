@@ -8,6 +8,8 @@ public class WeaponCtrl : MonoBehaviour
 
     public Transform bulletSpawnPoint;
 
+    public float bulletSpeed;
+
     public void SpawnBall()
     {
         BulletCtrl ball = Instantiate(paintBall, bulletSpawnPoint.position, Quaternion.identity);
