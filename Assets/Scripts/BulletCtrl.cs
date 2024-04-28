@@ -21,7 +21,10 @@ public class BulletCtrl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Instantiate(particleEffect, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        if(collision.gameObject.tag != "Weapon")
+        {
+            Instantiate(particleEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 }

@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     private WeaponCtrl _rightHandWeapon;
     private WeaponCtrl _leftHandWeapon;
 
+    public EffectMesh robotViewEffectMesh;
+    public Transform robotMeshVieTransform;
+
     private void Start()
     {
         rightHandGrabInteractable.WhenInteractableSet.Action += (GrabInteractable interactable) => { OnInteractableSelected(interactable, true); };
@@ -151,5 +154,16 @@ public class GameManager : MonoBehaviour
         bool hasRandomPosOnWall = firstRoom.GenerateRandomPositionOnSurface(MRUK.SurfaceType.VERTICAL, 0.5f, 
             LabelFilter.Included(new List<string>() { "WALL_FACE"}), out randomPosOnWall, out randomPosNormalOnWall);
         Debug.Log(hasRandomPosOnWall + " hasRandomPosOnWall, " + randomPosOnWall + " randomPosOnWall " + randomPosNormalOnWall + " randomPosNormalOnWall " + firstRoom.name + " firstRoom name");
+    }
+
+    public void ChangeMeshParentToRobotView()
+    {
+        robotViewEffectMesh.SetEffectObjectsParent(robotMeshVieTransform);
+        Transform[] robotViewChildObjects = robotMeshVieTransform.GetComponentsInChildren<Transform>();
+        int robotViewLayer = LayerMask.NameToLayer("RobotMeshViewLayer");
+        foreach(Transform child in robotViewChildObjects)
+        {
+            child.gameObject.layer = robotViewLayer;
+        }
     }
 }

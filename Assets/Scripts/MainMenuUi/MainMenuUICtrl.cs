@@ -150,7 +150,7 @@ public class MainMenuUICtrl : MonoBehaviour
 
     public void OnClickStartBtn()
     {
-
+        SceneManager.LoadScene("01Main");
     }
 
     private void OnClickMultiPlayerBtnBtn()
