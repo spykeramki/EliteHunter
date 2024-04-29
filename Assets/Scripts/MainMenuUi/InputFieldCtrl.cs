@@ -7,23 +7,26 @@ using UnityEngine.EventSystems;
 
 public class InputFieldCtrl : MonoBehaviour
 {
-    public TMP_InputField inputField;
-
-    public PointableUnityEventWrapper pointableUnityEventWrapper;
+    private TMP_InputField m_InputField;
+    private TouchScreenKeyboard m_Keyboard;
+    private string _inputText = string.Empty;
 
     private void Awake()
     {
-        pointableUnityEventWrapper.WhenSelect.AddListener((PointerEvent) =>
-        {
-            inputField.Select();
-        });
+        m_InputField = GetComponent<TMP_InputField>();
     }
 
-    /*private void OnDisable()
+
+    private void Update()
     {
-        pointableUnityEventWrapper.WhenSelect.RemoveListener((PointerEvent) =>
+        if(m_Keyboard != null)
         {
-            inputField.Select();
-        });
-    }*/
+            m_InputField.text = m_Keyboard.text;
+        }
+    }
+
+    public void OnDeselectInputField()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+    }
 }

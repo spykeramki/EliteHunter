@@ -39,18 +39,14 @@ public class MainMenuUICtrl : MonoBehaviour
 
     private Stack<List<GameObject>> backFunctionQueue;
 
-    public EventSystem eventSystem;
-
-    public PointableUnityEventWrapper pointableUnityEventWrapper;
-
 
     private void Start()
     {
         backFunctionQueue = new Stack<List<GameObject>>();
-        pointableUnityEventWrapper.WhenSelect.AddListener((PointerEvent) =>
+        /*pointableUnityEventWrapper.WhenSelect.AddListener((PointerEvent) =>
         {
             inputField.Select();
-        });
+        });*/
     }
 
     private void Update()
@@ -195,12 +191,5 @@ public class MainMenuUICtrl : MonoBehaviour
     }
 
 
-    void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-        {
-            eventSystem.SetSelectedGameObject(null);
-        }
-    }
 
 }
