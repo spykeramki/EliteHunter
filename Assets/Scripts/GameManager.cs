@@ -1,5 +1,6 @@
 using Meta.XR.MRUtilityKit;
 using Oculus.Interaction;
+using Oculus.Interaction.HandGrab;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
@@ -8,13 +9,12 @@ using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
     public static UnityEvent Fire = new UnityEvent();
     public static UnityEvent SecondaryFire = new UnityEvent();
 
-    public GrabInteractor rightHandGrabInteractable;
-    public GrabInteractor leftHandGrabInteractable;
-    public DistanceGrabInteractor leftHandDistanceGrabInteractable;
-    public DistanceGrabInteractor rightHandDistanceGrabInteractable;
+    public HandGrabInteractor rightHandGrabInteractor;
+    public HandGrabInteractor leftHandGrabInteractor;
 
     public NavMeshSurface navMeshSurface;
 
@@ -24,17 +24,30 @@ public class GameManager : MonoBehaviour
     public EffectMesh robotViewEffectMesh;
     public Transform robotMeshVieTransform;
 
+    public SpawnerCtrl cubeSpawnerCtrl;
+
+    public PlayerRoboCamCtrl playerRoboCamCtrl;
+
+    private bool isRobotView = false;
+
+    private int _currentGameLevel = 0;
+
+    private int testInt = 0;
+
+    public int CurrentGameLevel{
+        get { return _currentGameLevel; }
+    }
+
+    private void Awake(){
+        Instance = this;
+    }
+
     private void Start()
     {
-        rightHandGrabInteractable.WhenInteractableSet.Action += (GrabInteractable interactable) => { OnInteractableSelected(interactable, true); };
-        rightHandGrabInteractable.WhenInteractableUnset.Action += (GrabInteractable interactable) => { OnInteractableUnSelected(interactable, true); };
-        leftHandGrabInteractable.WhenInteractableSet.Action += (GrabInteractable interactable) => { OnInteractableSelected(interactable, false); };
-        leftHandGrabInteractable.WhenInteractableUnset.Action += (GrabInteractable interactable) => { OnInteractableUnSelected(interactable, false); };
-
-        rightHandDistanceGrabInteractable.WhenInteractableSet.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableSelected(interactable, true); };
-        rightHandDistanceGrabInteractable.WhenInteractableUnset.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableUnSelected(interactable, true); };
-        leftHandDistanceGrabInteractable.WhenInteractableSet.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableSelected(interactable, false); };
-        leftHandDistanceGrabInteractable.WhenInteractableUnset.Action += (DistanceGrabInteractable interactable) => { OnDistanceInteractableUnSelected(interactable, false); };
+        rightHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, true); };
+        rightHandGrabInteractor.WhenInteractableUnset.Action += (HandGrabInteractable interactable) => { OnInteractableUnSelected(interactable, true); };
+        leftHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, false); };
+        leftHandGrabInteractor.WhenInteractableUnset.Action += (HandGrabInteractable interactable) => { OnInteractableUnSelected(interactable, false); };
     }
 
     private void Update()
@@ -47,44 +60,27 @@ public class GameManager : MonoBehaviour
         {
             SecondaryFire?.Invoke();
         }
-        if (OVRInput.GetDown(OVRInput.Button.Three)){
-            GetRoomsData();
+        if(OVRInput.GetDown(OVRInput.Button.One)){
+            isRobotView = !isRobotView;
+            playerRoboCamCtrl.SetRobotControlStatus(isRobotView);
+            playerRoboCamCtrl.SetRobotToIdle();
+            PlayerCtrl.Instance.SetRoboCamCanvas(isRobotView);
         }
     }
-
-
-    private void OnInteractableSelected(GrabInteractable interactable, bool isRightHand)
+    private void OnInteractableSelected(HandGrabInteractable interactable, bool isRightHand)
     {
         if(interactable.tag == "Weapon") {
-            WeaponCtrl weaponCtrl = interactable.GetComponent<WeaponCtrl>();
+            WeaponCtrl weaponCtrl = interactable.GetComponentInParent<WeaponCtrl>();
             SetEventForFiring(weaponCtrl, isRightHand);
         }
     }
 
-    private void OnInteractableUnSelected(GrabInteractable interactable, bool isRightHand)
+    private void OnInteractableUnSelected(HandGrabInteractable interactable, bool isRightHand)
     {
         if (interactable.tag == "Weapon")
         {
-            WeaponCtrl weaponCtrl = interactable.GetComponent<WeaponCtrl>();
+            WeaponCtrl weaponCtrl = interactable.GetComponentInParent<WeaponCtrl>();
             RemoveEventForFiring(weaponCtrl, isRightHand );
-        }
-    }
-
-    private void OnDistanceInteractableSelected(DistanceGrabInteractable interactable, bool isRightHand)
-    {
-        if (interactable.tag == "Weapon")
-        {
-            WeaponCtrl weaponCtrl = interactable.GetComponent<WeaponCtrl>();
-            SetEventForFiring(weaponCtrl, isRightHand);
-        }
-    }
-
-    private void OnDistanceInteractableUnSelected(DistanceGrabInteractable interactable, bool isRightHand)
-    {
-        if (interactable.tag == "Weapon")
-        {
-            WeaponCtrl weaponCtrl = interactable.GetComponent<WeaponCtrl>();
-            RemoveEventForFiring(weaponCtrl, isRightHand);
         }
     }
 
@@ -165,5 +161,18 @@ public class GameManager : MonoBehaviour
         {
             child.gameObject.layer = robotViewLayer;
         }
+    }
+
+    public void StartGame(){
+        Invoke("StartNextLevel", 2f);
+    }
+
+    public void StartNextLevel(){
+        _currentGameLevel ++;
+        cubeSpawnerCtrl.SpawnCubesRandomly((int)(cubeSpawnerCtrl.CubesToCreate * 1.3));
+    }
+
+    public void OnDestroOfCube(){
+        cubeSpawnerCtrl.OnDestroyEachCube(StartGame);
     }
 }

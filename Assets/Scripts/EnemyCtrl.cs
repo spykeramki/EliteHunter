@@ -13,6 +13,8 @@ public class EnemyCtrl : MonoBehaviour
     private bool isWalking = false;
     private bool isPetOnCall = false;
 
+    private float health = 100f;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -21,6 +23,7 @@ public class EnemyCtrl : MonoBehaviour
 
     private void Start()
     {
+        OnClickCallPetBot();
     }
 
     private void Update()
@@ -48,11 +51,11 @@ public class EnemyCtrl : MonoBehaviour
                 animator.SetBool("Walk_Anim", false);
                 animator.SetBool("Open_Anim", false);
             }
-        }*/
+        }
         if (OVRInput.GetDown(OVRInput.Button.Two))
         {
             OnClickCallPetBot();
-        }
+        }*/
 
         
     }
@@ -85,5 +88,20 @@ public class EnemyCtrl : MonoBehaviour
     {
         isWalking = true;
         animator.SetBool("Walk_Anim", true);
+    }
+
+    private void ReduceHealth(float m_health){
+        health -= m_health;
+        if(health <= 0){
+            StopAllCoroutines();
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision){
+        
+        if(collision.gameObject.tag == "Bullet"){
+            ReduceHealth(35f);
+        }
     }
 }

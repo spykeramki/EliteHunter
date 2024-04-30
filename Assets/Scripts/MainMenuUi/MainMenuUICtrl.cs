@@ -149,8 +149,14 @@ public class MainMenuUICtrl : MonoBehaviour
     public void OnClickStartBtn()
     {
         if(playerDetailsCtrl.AcceptPlayerName){
-            startBtnGo.SetActive(false);
-            backBtnGo.SetActive(false);
+            List<GameObject> objectToHide = new List<GameObject>
+            {
+                startBtnGo,
+                backBtnGo,
+                mainMenuUiGos.newPlayer
+            };
+            SetActivenessOfGos(objectToHide, false);
+            
             DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName);
             loadingScreenCtrl.ShowLoadingScreen("01Main");
         }

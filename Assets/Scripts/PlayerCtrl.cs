@@ -10,11 +10,7 @@ public class PlayerCtrl : MonoBehaviour
 
     public Transform transformComp;
 
-    public PlayerRoboCamCtrl playerRoboCamCtrl;
-
     public GameObject RroboCamCanvasGo;
-
-    private bool isRobotView = false;
 
     private void Awake()
     {
@@ -28,16 +24,7 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
-    private void Update(){
-        if(OVRInput.GetDown(OVRInput.Button.One)){
-            isRobotView = !isRobotView;
-            playerRoboCamCtrl.SetRobotControlStatus(isRobotView);
-            playerRoboCamCtrl.SetRobotToIdle();
-            SetRoboCamCanvas(isRobotView);
-        }
-    }
-
-    private void SetRoboCamCanvas(bool isActive){
+    public void SetRoboCamCanvas(bool isActive){
         RroboCamCanvasGo.SetActive(isActive);
     }
 
