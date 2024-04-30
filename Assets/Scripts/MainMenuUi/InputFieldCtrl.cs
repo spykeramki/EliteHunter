@@ -25,8 +25,22 @@ public class InputFieldCtrl : MonoBehaviour
         }
     }
 
-    public void OnDeselectInputField()
+    public void OnApplicationFocus()
     {
         EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if(hasFocus){
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if(!pauseStatus){
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }
