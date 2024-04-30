@@ -19,7 +19,7 @@ public class LoadingScreenCtrl : MonoBehaviour
     public void ShowLoadingScreen(string sceneName)
     {
         gameObject.SetActive(true);
-        StartCoroutine(LoadSceneAndChangeImages());
+        //StartCoroutine(LoadSceneAndChangeImages());
         StartCoroutine(LoadSceneAsync(sceneName));
     }
 

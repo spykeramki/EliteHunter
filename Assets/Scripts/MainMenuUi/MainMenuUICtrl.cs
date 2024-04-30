@@ -12,7 +12,9 @@ using UnityEngine.Video;
 public class MainMenuUICtrl : MonoBehaviour
 {
 
-    public LoadGameProfilesListUiCtrl loadGameProfilesUiCtrl;
+    public LoadingScreenCtrl loadingScreenCtrl;
+
+    public PlayerDetailsCtrl playerDetailsCtrl;
 
     [Serializable]
     public struct MainMenuUiGos
@@ -146,7 +148,12 @@ public class MainMenuUICtrl : MonoBehaviour
 
     public void OnClickStartBtn()
     {
-        SceneManager.LoadScene("01Main");
+        if(playerDetailsCtrl.AcceptPlayerName){
+            startBtnGo.SetActive(false);
+            backBtnGo.SetActive(false);
+            DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName);
+            loadingScreenCtrl.ShowLoadingScreen("01Main");
+        }
     }
 
     private void OnClickMultiPlayerBtnBtn()

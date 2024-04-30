@@ -7,10 +7,6 @@ public class PlayerDetailsCtrl : MonoBehaviour
 {
     public TextMeshProUGUI nameInstruction;
 
-    public Button startBtn;
-
-    public LoadingScreenCtrl loadingScreenCtrl;
-
     private string TYPE_INSTRUCTION = "Good to go";
 
     private string NAME_ALREADY_EXISTS = "Hey! You have a twin with same name.\ngive another name";
@@ -18,11 +14,13 @@ public class PlayerDetailsCtrl : MonoBehaviour
     private string EMPTY_TEXT_WARNING = "You may feel Empty.\nBut you are more than nothing";
 
     private string _playerName;
+    public string PlayerName {
+        get{ return _playerName; }
+    }
 
-    private void Start()
-    {
-        _playerName = string.Empty;
-        startBtn.onClick.AddListener(OnClickStartBtn);
+    private bool _acceptPlayerName;
+    public bool AcceptPlayerName {
+        get{ return _acceptPlayerName;}
     }
 
     public void OnChangeName(string m_name)
@@ -51,19 +49,13 @@ public class PlayerDetailsCtrl : MonoBehaviour
     private void goodToGoSettings()
     {
         nameInstruction.color = Color.green;
-        startBtn.interactable = true;
+        _acceptPlayerName = true;
     }
 
     private void errorSetings()
     {
         nameInstruction.color = Color.red;
-        startBtn.interactable = false;
-    }
-
-    public void OnClickStartBtn()
-    {
-        DataManager.Instance.SetNewPlayerData(_playerName);
-        loadingScreenCtrl.ShowLoadingScreen("01Main");
+        _acceptPlayerName = false;
     }
 
 }

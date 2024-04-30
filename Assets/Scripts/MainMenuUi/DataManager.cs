@@ -58,7 +58,7 @@ public class DataManager : MonoBehaviour
 
     private void Start()
     {
-        savePath = Application.persistentDataPath + @"\hwcSaveData.txt";
+        savePath = Application.persistentDataPath + @"\eliteHunterData.txt";
         GetSavedData();
     }
 

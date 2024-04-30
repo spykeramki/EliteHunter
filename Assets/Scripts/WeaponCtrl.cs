@@ -14,6 +14,6 @@ public class WeaponCtrl : MonoBehaviour
     {
         BulletCtrl ball = Instantiate(paintBall, bulletSpawnPoint.position, Quaternion.identity);
 
-        ball.RigidBody.velocity = bulletSpawnPoint.forward * 5f;
+        ball.RigidBody.velocity = bulletSpawnPoint.forward * bulletSpeed;
     }
 }
