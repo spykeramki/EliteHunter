@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 5137003586341501693}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.28, z: 12.14}
+  m_LocalPosition: {x: 0, y: 4.28, z: 12.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -218,6 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintBall: {fileID: 8068829998700358225, guid: f76a9f038f2798240b4d606547c768f7, type: 3}
   bulletSpawnPoint: {fileID: 8975575445079684624}
+  bulletSpeed: 0
 --- !u!114 &1281552315418377099
 MonoBehaviour:
   m_ObjectHideFlags: 0
