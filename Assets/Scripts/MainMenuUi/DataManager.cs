@@ -22,24 +22,26 @@ public class DataManager : MonoBehaviour
     {
         public string playerName;
         public string playerSkin;
-        public int id;
-        public string gameState;
     }
 
     [Serializable]
-    public struct SaveData
+    public struct SavedData
     {
-        public List<UserGameData> playersDataList;
+        public UserGameData playerData;
     }
 
     [SerializeField, HideInInspector]
-    private SaveData savedData;
+    private SavedData saveData;
 
     private string savePath = string.Empty;
 
     string saveDataJsonString = string.Empty;
 
-    private int currentPlayerDataId = -1;
+    private bool _isNewPlayer = false;
+    public bool IsNewPlayer
+    {
+        get { return _isNewPlayer; }
+    }
 
     private void Awake()
     {
@@ -52,108 +54,51 @@ public class DataManager : MonoBehaviour
         {
             Destroy(this);
         }
-        savedData = new SaveData() { playersDataList = new List<UserGameData>() };
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        savePath = Application.persistentDataPath + @"\eliteHunterData3.txt";
+        CheckSavedData();
     }
 
     private void Start()
     {
-        savePath = Application.persistentDataPath + @"\eliteHunterData.txt";
-        GetSavedData();
+        
     }
 
-    public void SetNewPlayerData(string  m_playerName)
+    public void SetNewPlayerData(string  m_playerName, string m_skin)
     {
-        UserGameData userGameData = new UserGameData() {
+        UserGameData userGameData = new UserGameData()
+        {
             playerName = m_playerName,
-            id = GetPlayerDataList().Count,
-            playerSkin = "BLUE",
+            playerSkin = m_skin,
         };
-        savedData.playersDataList.Add(userGameData);
 
-        SetCurrentPlayerIndex(userGameData.id);
+        saveData.playerData = userGameData;
+
         SetSaveData();
     }
 
     public void SetSaveData()
     {
-        saveDataJsonString = JsonUtility.ToJson(savedData);
+        saveDataJsonString = JsonUtility.ToJson(saveData);
         File.WriteAllText(savePath, saveDataJsonString);
     }
 
-    private void GetSavedData()
+    private void CheckSavedData()
     {
-        if(!File.Exists(savePath))
+        if (!File.Exists(savePath))
         {
-            return;
-        }
-        saveDataJsonString = File.ReadAllText(savePath);
-
-        savedData = JsonUtility.FromJson<SaveData>(saveDataJsonString);
-    } 
-
-    public bool PlayerNameAlreadyExists(string m_name)
-    {
-        int playerIndex = -1;
-        playerIndex = GetPlayerDataList().FindIndex(each => each.playerName == m_name);
-        return playerIndex >= 0;
-    }
-
-    public UserGameData GetCurrentUserData()
-    {
-        return GetPlayerDataList().Find(each => each.id == currentPlayerDataId);
-    }
-
-    public void SetCurrentPlayerIndex(int id)
-    {
-        currentPlayerDataId = id;
-    }
-
-    private List<UserGameData> GetPlayerDataList()
-    {
-        if(savedData.playersDataList == null)
-        {
-            return new List<UserGameData>();
+            _isNewPlayer = true;
         }
         else
         {
-            return savedData.playersDataList;
+            _isNewPlayer = false;
+            saveDataJsonString = File.ReadAllText(savePath);
+
+            saveData = JsonUtility.FromJson<SavedData>(saveDataJsonString);
         }
-    }
+    } 
 
-
-    public LoadGameProfilesListUiCtrl.UiData PrepareDataForLoadGameProfiles()
+    public UserGameData GetUserData()
     {
-
-        List<LoadGameProfileUiCtrl.UiData> uiData = new List<LoadGameProfileUiCtrl.UiData>();
-        
-            /*for (int i = GetPlayerDataList().Count - 1; i >= 0; i--)
-            {
-                LoadGameProfileUiCtrl.UiData data = new LoadGameProfileUiCtrl.UiData();
-                data.name = savedData.playersDataList[i].playerName;
-                data.id = savedData.playersDataList[i].id;
-                uiData.Add(data);
-            }*/
-
-        return new LoadGameProfilesListUiCtrl.UiData() { LoadGameProfilesData = uiData };
-
-    }
-
-    private void OnSceneLoaded(Scene m_scene, LoadSceneMode m_loadSceneMode)
-    {
-        _sceneName = m_scene.name;
-    }
-
-    public void SaveDataOfCurrentUser()
-    {
-        /*UserGameData userGameData = GetCurrentUserData();
-        userGameData.playerGameData = PlayerCtrl.LocalInstance.GetPlayerGameData();
-        userGameData.machinesData = GameManager.Instance.GetMachinesData();
-        userGameData.garbageDetails = GameManager.Instance.GetGarbageDetails();
-        userGameData.gameState = GameManager.Instance.CurrentGameState.ToString();
-
-        int index = GetPlayerDataList().FindIndex(each => each.id == currentPlayerDataId);
-        savedData.playerDataList[index] = userGameData;
-        SetSaveData();*/
+        return saveData.playerData;
     }
 }

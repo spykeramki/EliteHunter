@@ -37,7 +37,9 @@ public class MainMenuUICtrl : MonoBehaviour
 
     public TouchScreenKeyboard overlayKeyboard;
 
-    public Transform playerTransform;
+    public Transform playerCamTransform;
+
+    public TextMeshProUGUI mainMenuSupportText;
 
     private Stack<List<GameObject>> backFunctionQueue;
 
@@ -45,18 +47,18 @@ public class MainMenuUICtrl : MonoBehaviour
     private void Start()
     {
         backFunctionQueue = new Stack<List<GameObject>>();
-        /*pointableUnityEventWrapper.WhenSelect.AddListener((PointerEvent) =>
-        {
-            inputField.Select();
-        });*/
+        SetInitialUi(DataManager.Instance.IsNewPlayer);
     }
 
     private void Update()
     {
         if (OVRInput.GetDown(OVRInput.Button.Four))
         {
-            transform.position = playerTransform.position - new Vector3(0F, 1.5F, 0F);
-            transform.forward = playerTransform.forward;
+            transform.position = playerCamTransform.position - new Vector3(0F, 1.5F, 0F);
+
+            transform.rotation = playerCamTransform.rotation;
+            transform.up = Vector3.up;
+            //transform.rotation *= Quaternion.FromToRotation(transform.up, Vector3.up);
         }
         if(overlayKeyboard != null)
         {
@@ -64,10 +66,30 @@ public class MainMenuUICtrl : MonoBehaviour
         }
     }
 
+
+    private void SetInitialUi(bool m_isNewPlayer)
+    {
+        List<GameObject> playerNameUiGos = new List<GameObject>
+        {
+            mainMenuUiGos.newPlayer
+        };
+        List<GameObject> mainMenuUi = new List<GameObject>
+        {
+            mainMenuUiGos.home,
+            mainMenuBtnsParentGo
+        };
+        if (!m_isNewPlayer)
+        {
+            SetSupportTextWithPlayerName(DataManager.Instance.GetUserData().playerName);
+        }
+        SetActivenessOfGos(playerNameUiGos, m_isNewPlayer);
+        SetActivenessOfGos(mainMenuUi, !m_isNewPlayer);
+    }
+
     public void OnClickPlayBtn()
     {
-
-        OnClickPlayOption(ref mainMenuUiGos.newPlayer);
+        StartGame();
+       // OnClickPlayOption(ref mainMenuUiGos.newPlayer);
     }
 
     public void OnClickQuitBtn()
@@ -148,18 +170,39 @@ public class MainMenuUICtrl : MonoBehaviour
 
     public void OnClickStartBtn()
     {
-        if(playerDetailsCtrl.AcceptPlayerName){
-            List<GameObject> objectToHide = new List<GameObject>
-            {
-                startBtnGo,
-                backBtnGo,
-                mainMenuUiGos.newPlayer
-            };
-            SetActivenessOfGos(objectToHide, false);
-            
-            DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName);
-            loadingScreenCtrl.ShowLoadingScreen("01Main");
-        }
+        DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName, playerDetailsCtrl.PlayerSkin);
+        List<GameObject> playerNameUiGos = new List<GameObject>
+        {
+            mainMenuUiGos.newPlayer,
+            startBtnGo
+        };
+        List<GameObject> mainMenuUi = new List<GameObject>
+        {
+            mainMenuUiGos.home,
+            mainMenuBtnsParentGo
+        };
+        SetSupportTextWithPlayerName(DataManager.Instance.GetUserData().playerName);
+        SetActivenessOfGos(playerNameUiGos,false);
+        StartCoroutine(SetActivenessOfGosAfterATime(mainMenuUi, true));
+    }
+
+    public void SetSupportTextWithPlayerName(string m_name)
+    {
+        mainMenuSupportText.text = "Welcome to the world of hunters " + m_name;
+
+    }
+
+    public void StartGame()
+    {
+        List<GameObject> objectToHide = new List<GameObject>
+        {
+            backBtnGo,
+            mainMenuUiGos.newPlayer,
+            mainMenuBtnsParentGo
+        };
+        SetActivenessOfGos(objectToHide, false);
+
+        loadingScreenCtrl.ShowLoadingScreen("01Main");
     }
 
     private void OnClickMultiPlayerBtnBtn()
