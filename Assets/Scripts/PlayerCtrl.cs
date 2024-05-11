@@ -10,7 +10,7 @@ public class PlayerCtrl : MonoBehaviour
 
     public Transform transformComp;
 
-    public GameObject RroboCamCanvasGo;
+    private GameObject RroboCamCanvasGo;
 
     public PlayerStatsUiCtrl playerStatsUiCtrl;
 
@@ -34,8 +34,10 @@ public class PlayerCtrl : MonoBehaviour
 
     private void Start()
     {
+        RroboCamCanvasGo = GameObject.FindWithTag("DroneCamCanvas");
         playerStatsUiCtrl.SetHealthInUi(_health);
         playerStatsUiCtrl.SetShieldInUi(_shield);
+        SetRoboCamCanvas(false);
     }
 
     public void SetRoboCamCanvas(bool isActive){

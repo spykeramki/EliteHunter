@@ -9,6 +9,7 @@ TagManager:
   - PaintBall
   - EnemyBot
   - PlayerBody
+  - DroneCamCanvas
   layers:
   - Default
   - TransparentFX

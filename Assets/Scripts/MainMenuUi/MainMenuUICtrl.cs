@@ -8,13 +8,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class MainMenuUICtrl : MonoBehaviour
+public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 {
 
     public LoadingScreenCtrl loadingScreenCtrl;
 
     public PlayerDetailsCtrl playerDetailsCtrl;
+
+    public RoomDetailsCtrl roomDetailsCtrl;
 
     [Serializable]
     public struct MainMenuUiGos
@@ -24,14 +28,19 @@ public class MainMenuUICtrl : MonoBehaviour
         public GameObject quit;
         public GameObject instructions;
         public GameObject credits;
+        public GameObject multiplayerHome;
+        public GameObject createRoom;
+        public GameObject joinRoom;
     }
 
     public MainMenuUiGos mainMenuUiGos;
 
     public GameObject mainMenuBtnsParentGo;
+    public GameObject playBtnsParentGo;
     public GameObject backBtnGo;
     public GameObject yesAndNoBtnParentGo;
     public GameObject startBtnGo;
+    public GameObject createBtnGo;
 
     public TMP_InputField inputField;
 
@@ -66,7 +75,7 @@ public class MainMenuUICtrl : MonoBehaviour
         }
     }
 
-
+    #region MAIN MENU
     private void SetInitialUi(bool m_isNewPlayer)
     {
         List<GameObject> playerNameUiGos = new List<GameObject>
@@ -78,18 +87,27 @@ public class MainMenuUICtrl : MonoBehaviour
             mainMenuUiGos.home,
             mainMenuBtnsParentGo
         };
+        SetActivenessOfGos(playerNameUiGos, m_isNewPlayer);
+        SetActivenessOfGos(mainMenuUi, false);
         if (!m_isNewPlayer)
         {
             SetSupportTextWithPlayerName(DataManager.Instance.GetUserData().playerName);
+            ConnectWithName(playerDetailsCtrl.PlayerName);
         }
-        SetActivenessOfGos(playerNameUiGos, m_isNewPlayer);
-        SetActivenessOfGos(mainMenuUi, !m_isNewPlayer);
     }
 
     public void OnClickPlayBtn()
     {
-        StartGame();
-       // OnClickPlayOption(ref mainMenuUiGos.newPlayer);
+        HideMainMenuUiAndPushToStack();
+
+        List<GameObject> objectToActive = new List<GameObject>
+        {
+            mainMenuUiGos.home,
+            backBtnGo,
+            playBtnsParentGo
+        };
+        backFunctionQueue.Push(objectToActive);
+        StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
     }
 
     public void OnClickQuitBtn()
@@ -105,6 +123,80 @@ public class MainMenuUICtrl : MonoBehaviour
     public void OnClickCreditsBtn()
     {
         OnClickAMainMenuOption(ref mainMenuUiGos.credits);
+    }
+
+    public void OnClickMultiPlayerBtnBtn()
+    {
+        DataManager.Instance.JoinLobby();
+        List<GameObject> objectToBeInactive = new List<GameObject>
+        {
+            mainMenuUiGos.home,
+            backBtnGo,
+            playBtnsParentGo
+        };
+        backFunctionQueue.Push(objectToBeInactive);
+        SetActivenessOfGos(objectToBeInactive, false);
+
+        List<GameObject> objectToActive = new List<GameObject>
+        {
+            mainMenuUiGos.multiplayerHome,
+            backBtnGo
+        };
+        backFunctionQueue.Push(objectToActive);
+        StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
+    }
+
+    public void OnClickCreateRoomBtn()
+    {
+        List<GameObject> objectToBeInactive = new List<GameObject>
+        {
+            mainMenuUiGos.multiplayerHome,
+            backBtnGo
+        };
+        backFunctionQueue.Push(objectToBeInactive);
+        SetActivenessOfGos(objectToBeInactive, false);
+
+        List<GameObject> objectToActive = new List<GameObject>
+        {
+            mainMenuUiGos.createRoom,
+            backBtnGo
+        };
+        backFunctionQueue.Push(objectToActive);
+        StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
+    }
+
+    public void OnClickCreateBtn()
+    {
+        List<GameObject> objectToBeInactive = new List<GameObject>
+        {
+            mainMenuUiGos.createRoom,
+            backBtnGo,
+            createBtnGo,
+        };
+        SetActivenessOfGos(objectToBeInactive, false);
+        CreateRoom(roomDetailsCtrl.RoomName);
+    }
+
+    public void OnClickJoinRoomBtn()
+    {
+        List<GameObject> objectToBeInactive = new List<GameObject>
+        {
+            mainMenuUiGos.multiplayerHome,
+            backBtnGo
+        };
+        backFunctionQueue.Push(objectToBeInactive);
+        SetActivenessOfGos(objectToBeInactive, false);
+
+        //SetData In Rooms List UI
+
+        List<GameObject> objectToActive = new List<GameObject>
+        {
+            mainMenuUiGos.joinRoom,
+            backBtnGo
+        };
+        backFunctionQueue.Push(objectToActive);
+        StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
+        
     }
 
     public void OnClickBackBtn()
@@ -124,20 +216,6 @@ public class MainMenuUICtrl : MonoBehaviour
         {
             m_goToActive,
             backBtnGo
-        };
-        backFunctionQueue.Push(objectToActive);
-        StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
-    }
-
-    private void OnClickPlayOption(ref GameObject m_goToActive)
-    {
-        HideMainMenuUiAndPushToStack();
-
-        List<GameObject> objectToActive = new List<GameObject>
-        {
-            m_goToActive,
-            backBtnGo,
-            startBtnGo
         };
         backFunctionQueue.Push(objectToActive);
         StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
@@ -171,6 +249,17 @@ public class MainMenuUICtrl : MonoBehaviour
     public void OnClickStartBtn()
     {
         DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName, playerDetailsCtrl.PlayerSkin);
+        ConnectWithName(playerDetailsCtrl.PlayerName);
+        List<GameObject> objectsToHide = new List<GameObject>
+        {
+            mainMenuUiGos.newPlayer,
+            startBtnGo
+        };
+        SetActivenessOfGos(objectsToHide, false);
+    }
+
+    public void ShowMainMenu()
+    {
         List<GameObject> playerNameUiGos = new List<GameObject>
         {
             mainMenuUiGos.newPlayer,
@@ -182,7 +271,7 @@ public class MainMenuUICtrl : MonoBehaviour
             mainMenuBtnsParentGo
         };
         SetSupportTextWithPlayerName(DataManager.Instance.GetUserData().playerName);
-        SetActivenessOfGos(playerNameUiGos,false);
+        SetActivenessOfGos(playerNameUiGos, false);
         StartCoroutine(SetActivenessOfGosAfterATime(mainMenuUi, true));
     }
 
@@ -203,14 +292,6 @@ public class MainMenuUICtrl : MonoBehaviour
         SetActivenessOfGos(objectToHide, false);
 
         loadingScreenCtrl.ShowLoadingScreen("01Main");
-    }
-
-    private void OnClickMultiPlayerBtnBtn()
-    {
-        /*LoadGameProfilesListUiCtrl.UiData loadProfilesUiData = DataManager.Instance.PrepareDataForLoadGameProfiles();
-
-        loadGameProfilesUiCtrl.SetDataInUi(loadProfilesUiData);
-        loadGameProfilesUiCtrl.gameObject.SetActive(true);*/
     }
 
     public void QuitGame()
@@ -246,6 +327,58 @@ public class MainMenuUICtrl : MonoBehaviour
         overlayKeyboard = null;
     }
 
+    #endregion
 
+    #region MULTIPLAYER RELATED
+
+    public void ConnectWithName(string m_name)
+    {
+        PhotonNetwork.NickName = m_name;
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        ShowMainMenu();
+    }
+
+    private void CreateRoom(string m_roomName)
+    {
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 3;
+        roomOptions.IsVisible = true;
+        roomOptions.IsOpen = true;
+
+        PhotonNetwork.CreateRoom(m_roomName, roomOptions, DataManager.Instance.CustomLobby);
+    }
+
+    public override void OnCreatedRoom()
+    {
+        Debug.LogErrorFormat("Room Created " + PhotonNetwork.CurrentRoom.Name);
+        PhotonNetwork.LoadLevel("01Main");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
+        OnClickBackBtn();
+    }
+
+    private void JoinRoom(string m_roomName)
+    {
+        PhotonNetwork.JoinRoom(m_roomName);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
+
+    }
+
+    public override void OnJoinedRoom()
+    {
+        // joined a room successfully, JoinOrCreateRoom leads here on success
+    }
+    #endregion
 
 }

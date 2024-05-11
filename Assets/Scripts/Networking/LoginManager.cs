@@ -4,39 +4,15 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Oculus.Interaction;
+using System;
 
 public class LoginManager : MonoBehaviourPunCallbacks
 {
-    public TMP_InputField inputField;
+    public Action ConnectedToServer;
 
-    public GameObject connectBtnGo;
-
-    private void Start()
+    public void ConnectWithName(string m_name)
     {
-        PhotonNetwork.ConnectUsingSettings();
-        inputField.onValueChanged.AddListener(OnChangeInputValue);
-    }
-
-    public void OnChangeInputValue(string m_text)
-    {
-        if(inputField.text != null || inputField.text != string.Empty)
-        {
-            connectBtnGo.SetActive(true);
-        }
-        else
-        {
-            connectBtnGo.SetActive(false);
-        }
-    }
-
-    public void ConnectWithName()
-    {
-        PhotonNetwork.NickName = inputField.text;
-        PhotonNetwork.ConnectUsingSettings();
-    }
-
-    public void ConnectAnonymously()
-    {
+        PhotonNetwork.NickName = m_name;
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -47,11 +23,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Can Matchmake now" + PhotonNetwork.NickName);
-    }
-
-    private void OnDestroy()
-    {
-        inputField.onValueChanged.RemoveListener(OnChangeInputValue);
+        ConnectedToServer?.Invoke();
     }
 }

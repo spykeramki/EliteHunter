@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Oculus.Interaction;
 
 public class BodyCtrl : MonoBehaviour
 {
@@ -27,8 +28,15 @@ public class BodyCtrl : MonoBehaviour
     public Transform headConstraint;
     private Vector3 offset;
 
+    private OVRCameraRig ovrCameraRig;
+
     void Start()
     {
+        ovrCameraRig = GameObject.FindObjectOfType<OVRCameraRig>();
+        Debug.Log(ovrCameraRig.gameObject.name + " ovrCameraRig name");
+        headset.vrTarget = ovrCameraRig.centerEyeAnchor;
+        rightController.vrTarget = ovrCameraRig.rightHandAnchor;
+        leftController.vrTarget = ovrCameraRig.leftHandAnchor;
         offset = transform.position - headConstraint.position;
     }
 

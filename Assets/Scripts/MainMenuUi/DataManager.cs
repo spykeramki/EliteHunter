@@ -4,8 +4,10 @@ using UnityEngine;
 using System;
 using System.IO;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class DataManager : MonoBehaviour
+public class DataManager : MonoBehaviourPunCallbacks
 {
     public static DataManager Instance;
 
@@ -42,6 +44,18 @@ public class DataManager : MonoBehaviour
     {
         get { return _isNewPlayer; }
     }
+
+
+    #region MULTIPLAYER
+    private TypedLobby customLobby = new TypedLobby("eliteHunterLobby", LobbyType.Default);
+    public TypedLobby CustomLobby
+    {
+        get { return customLobby; }
+    }
+
+    private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
+
+    #endregion
 
     private void Awake()
     {
@@ -101,4 +115,59 @@ public class DataManager : MonoBehaviour
     {
         return saveData.playerData;
     }
+
+    public Dictionary<string, RoomInfo> GetRoomsData()
+    {
+        return cachedRoomList;
+    }
+
+    public bool IsRoomAlreadyExists(string m_room)
+    {
+        return cachedRoomList.ContainsKey(m_room);
+    }
+
+
+    #region
+    public void JoinLobby()
+    {
+        PhotonNetwork.JoinLobby(customLobby);
+    }
+
+    private void UpdateCachedRoomList(List<RoomInfo> roomList)
+    {
+        for (int i = 0; i < roomList.Count; i++)
+        {
+            RoomInfo info = roomList[i];
+            if (info.RemovedFromList)
+            {
+                cachedRoomList.Remove(info.Name);
+            }
+            else
+            {
+                cachedRoomList[info.Name] = info;
+            }
+        }
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Joined Lobby: " + PhotonNetwork.CurrentLobby.Name);
+        cachedRoomList.Clear();
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        UpdateCachedRoomList(roomList);
+    }
+
+    public override void OnLeftLobby()
+    {
+        cachedRoomList.Clear();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        cachedRoomList.Clear();
+    }
+    #endregion
 }
