@@ -8,9 +8,16 @@ public class EnemyCubeCtrl : MonoBehaviour
 {
     public GameObject thisGo;
 
+    private PhotonView photonView;
+
     private int id = -1;
     public int Id{
         get{ return id; }
+    }
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
     }
 
     public void SetCubeId(int m_id){
@@ -25,6 +32,7 @@ public class EnemyCubeCtrl : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
+            photonView.RequestOwnership();
             PhotonNetwork.Destroy(gameObject);
         }
     }

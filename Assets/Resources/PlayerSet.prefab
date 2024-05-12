@@ -364,6 +364,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 165575167867189504}
     m_Modifications:
     - target: {fileID: 422970048318595600, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: photonView
+      value: 
+      objectReference: {fileID: 3921563370352585947}
+    - target: {fileID: 422970048318595600, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
       propertyPath: playerRoboCamCtrl
       value: 
       objectReference: {fileID: 5224620086725335294}

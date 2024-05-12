@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -24,6 +25,8 @@ public class PlayerCtrl : MonoBehaviour
     private float _shield = 100f;
 
     private bool isRobotView = false;
+
+    public PhotonView photonView;
 
     private void Awake()
     {

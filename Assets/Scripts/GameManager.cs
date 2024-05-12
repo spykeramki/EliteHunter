@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
         rightHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, true); };
         rightHandGrabInteractor.WhenInteractableUnset.Action += (HandGrabInteractable interactable) => { OnInteractableUnSelected(interactable, true); };
         leftHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, false); };

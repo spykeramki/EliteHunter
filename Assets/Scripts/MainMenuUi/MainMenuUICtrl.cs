@@ -54,6 +54,30 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     private Stack<List<GameObject>> backFunctionQueue;
 
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(10, 800, 150, 50), "Continue"))
+        {
+            OnClickStartBtn();
+        }
+
+        if (GUI.Button(new Rect(160, 800, 150, 50), "Play"))
+        {
+            OnClickPlayBtn();
+        }
+        if (GUI.Button(new Rect(320, 800, 150, 50), "MultiPlayer"))
+        {
+            OnClickMultiPlayerBtnBtn();
+        }
+        if (GUI.Button(new Rect(480, 800, 150, 50), "JoinRoom"))
+        {
+            OnClickJoinRoomBtn();
+        }
+        if (GUI.Button(new Rect(320, 1000, 150, 50), "Refresh List"))
+        {
+            OnClickRefreshBtn();
+        }
+    }
 
     private void Start()
     {
@@ -189,12 +213,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         backFunctionQueue.Push(objectToBeInactive);
         SetActivenessOfGos(objectToBeInactive, false);
 
-        List<RoomInfo> roomInfos = new List<RoomInfo>();
-        foreach (KeyValuePair<string, RoomInfo> item in DataManager.Instance.GetRoomsData())
-        {
-            roomInfos.Add(item.Value);
-        }
-        joinRoomCtrl.CreateAndSetJoinRoomItem(roomInfos);
+        OnClickRefreshBtn();
 
         List<GameObject> objectToActive = new List<GameObject>
         {
@@ -204,6 +223,16 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         backFunctionQueue.Push(objectToActive);
         StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
         
+    }
+
+    public void OnClickRefreshBtn()
+    {
+        List<RoomInfo> roomInfos = new List<RoomInfo>();
+        foreach (KeyValuePair<string, RoomInfo> item in DataManager.Instance.GetRoomsData())
+        {
+            roomInfos.Add(item.Value);
+        }
+        joinRoomCtrl.CreateAndSetJoinRoomItem(roomInfos);
     }
 
     public void OnClickBackBtn()
