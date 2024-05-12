@@ -133,6 +133,7 @@ public class DataManager : MonoBehaviourPunCallbacks
         if(scene.name == Constants.GAME_SCENE)
         {
             spawnedPlayerModel = PhotonNetwork.Instantiate(Constants.PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
+            spawnedPlayerModel.GetComponentInChildren<PlayerCtrl>().SetMaterialOnPlayerChoice(GetUserData().playerSkin);
         }
     }
 

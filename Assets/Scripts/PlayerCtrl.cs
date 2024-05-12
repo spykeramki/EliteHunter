@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -25,6 +26,18 @@ public class PlayerCtrl : MonoBehaviour
     private float _shield = 100f;
 
     private bool isRobotView = false;
+
+    public Renderer playerMeshRenderer;
+
+    [Serializable]
+    public struct PlayerMats
+    {
+        public Material blueSkin;
+        public Material greenSkin;
+        public Material redSkin;
+    }
+
+    public PlayerMats playerMats;
 
     public PhotonView photonView;
 
@@ -118,6 +131,24 @@ public class PlayerCtrl : MonoBehaviour
             }
             playerStatsUiCtrl.SetShieldInUi(_shield);
         }
+    }
+
+    public void SetMaterialOnPlayerChoice(string m_skin)
+    {
+        Material[] playerMat = playerMeshRenderer.materials;
+        switch(m_skin)
+        {
+            case Constants.BLUE_SKIN:
+                playerMat[0] = playerMats.blueSkin;
+                break;
+            case Constants.GREEN_SKIN:
+                playerMat[0]= playerMats.greenSkin;
+                break;
+            case Constants.RED_SKIN:
+                playerMat[0] = playerMats.redSkin;
+                break;
+        }
+        playerMeshRenderer.materials = playerMat;
     }
 
 }

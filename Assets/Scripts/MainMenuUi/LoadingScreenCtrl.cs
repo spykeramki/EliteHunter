@@ -19,23 +19,7 @@ public class LoadingScreenCtrl : MonoBehaviour
     public void ShowLoadingScreen(string sceneName)
     {
         gameObject.SetActive(true);
-        //StartCoroutine(LoadSceneAndChangeImages());
-        StartCoroutine(LoadSceneAsync(sceneName));
-    }
-
-    private IEnumerator LoadSceneAndChangeImages()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1.5f);
-            screenBg.sprite = screenSprites[_currentIndex];
-            _currentIndex++;
-
-            if(_currentIndex>= screenSprites.Length)
-            {
-                _currentIndex = 0;
-            }
-        }
+        //StartCoroutine(LoadSceneAsync(sceneName));
     }
 
     private IEnumerator LoadSceneAsync(string sceneName)

@@ -73,17 +73,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             SecondaryFire?.Invoke();
         }
-        if (OVRInput.GetDown(OVRInput.Button.Two))
-        {
-            if (DebugLogManager.Instance.IsLogWindowVisible)
-            {
-                DebugLogManager.Instance.HideLogWindow();
-            }
-            else
-            {
-                DebugLogManager.Instance.ShowLogWindow();
-            }
-        }
         _timeSpent += Time.deltaTime;
     }
     private void OnInteractableSelected(HandGrabInteractable interactable, bool isRightHand)

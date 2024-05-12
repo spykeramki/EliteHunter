@@ -14,7 +14,7 @@ using Photon.Realtime;
 public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 {
 
-    public LoadingScreenCtrl loadingScreenCtrl;
+    public GameObject loadingScreen;
 
     public PlayerDetailsCtrl playerDetailsCtrl;
 
@@ -82,6 +82,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
     private void Start()
     {
         backFunctionQueue = new Stack<List<GameObject>>();
+        SetActivenessOfLoadingScreen(true);
         SetInitialUi(DataManager.Instance.IsNewPlayer);
     }
 
@@ -119,6 +120,10 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         {
             SetSupportTextWithPlayerName(DataManager.Instance.GetUserData().playerName);
             ConnectWithName(playerDetailsCtrl.PlayerName);
+        }
+        if (m_isNewPlayer)
+        {
+            SetActivenessOfLoadingScreen(false);
         }
     }
 
@@ -295,6 +300,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     public void OnClickStartBtn()
     {
+        SetActivenessOfLoadingScreen(true);
         DataManager.Instance.SetNewPlayerData(playerDetailsCtrl.PlayerName, playerDetailsCtrl.PlayerSkin);
         ConnectWithName(playerDetailsCtrl.PlayerName);
         List<GameObject> objectsToHide = new List<GameObject>
@@ -326,19 +332,6 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
     {
         mainMenuSupportText.text = "Welcome to the world of hunters " + m_name;
 
-    }
-
-    public void StartGame()
-    {
-        List<GameObject> objectToHide = new List<GameObject>
-        {
-            backBtnGo,
-            mainMenuUiGos.newPlayer,
-            mainMenuBtnsParentGo
-        };
-        SetActivenessOfGos(objectToHide, false);
-
-        loadingScreenCtrl.ShowLoadingScreen(Constants.GAME_SCENE);
     }
 
     public void QuitGame()
@@ -373,6 +366,10 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         overlayKeyboard = null;
     }
 
+    public void SetActivenessOfLoadingScreen(bool m_active)
+    {
+        loadingScreen.SetActive(m_active);
+    }
     #endregion
 
     #region MULTIPLAYER RELATED
@@ -385,9 +382,9 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
+        SetActivenessOfLoadingScreen(false);
         ShowMainMenu();
     }
-
 
     private void CreateRoom(string m_roomName)
     {
@@ -396,6 +393,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
 
+        SetActivenessOfLoadingScreen(true);
         PhotonNetwork.JoinOrCreateRoom(m_roomName, roomOptions, DataManager.Instance.CustomLobby);
     }
 
@@ -410,11 +408,13 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom()
     {
+        SetActivenessOfLoadingScreen(false);
         Debug.LogErrorFormat("Room Created " + PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
+        SetActivenessOfLoadingScreen(false);
         Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
         OnClickBackBtn();
     }

@@ -17,6 +17,6 @@ public class StartGameUiCtrl : MonoBehaviour
         GameManager.Instance.StartGameOnMasterClient();
         startBtn.SetActive(false);
         gameObject.SetActive(false);
-       // GameManager.Instance.mainUi.SetActive(false);
+        GameManager.Instance.mainUi.SetActive(false);
     }
 }
