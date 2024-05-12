@@ -12,7 +12,7 @@ public class PlayerCollisionCtrl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (PhotonNetwork.IsMasterClient && collision.gameObject.tag == "Bullet")
+        if (playerCtrl.photonView.IsMine && collision.gameObject.tag == "Bullet")
         {
             PlayerCtrl.Instance.ReduceHealthAndShieldOfPlayer(damageToBeTakenFromBullet);
             Destroy(collision.gameObject);

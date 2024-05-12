@@ -133,7 +133,6 @@ public class DataManager : MonoBehaviourPunCallbacks
         if(scene.name == Constants.GAME_SCENE)
         {
             spawnedPlayerModel = PhotonNetwork.Instantiate(Constants.PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
-            Debug.Log(PhotonNetwork.CurrentRoom.Name + " current client room name");
         }
     }
 
@@ -184,6 +183,7 @@ public class DataManager : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo m_roomInfo)
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.JoinRoom(m_roomInfo.Name);
     }
 
@@ -196,12 +196,6 @@ public class DataManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        PhotonNetwork.LoadLevel(Constants.GAME_SCENE);
-    }
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        base.OnPlayerLeftRoom(newPlayer);
         PhotonNetwork.LoadLevel(Constants.GAME_SCENE);
     }
 

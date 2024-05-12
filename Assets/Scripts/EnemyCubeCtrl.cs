@@ -33,7 +33,10 @@ public class EnemyCubeCtrl : MonoBehaviour
         if (collision.gameObject.tag == "Bullet")
         {
             photonView.RequestOwnership();
-            PhotonNetwork.Destroy(gameObject);
+            if (photonView.IsMine)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
     }
 }

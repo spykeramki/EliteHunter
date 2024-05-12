@@ -326,7 +326,7 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: AnimSpeed
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!114 &1054398045538408537
 MonoBehaviour:
@@ -451,10 +451,34 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4086863527034099505, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086863527034099505, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086863527034099505, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4613950893936063095, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
       propertyPath: photonView
       value: 
       objectReference: {fileID: 3921563370352585947}
+    - target: {fileID: 7269095456612770360, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7269095456612770360, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7269095456612770360, guid: 09d15b35458c8e34bbbed6a3c0658cf9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

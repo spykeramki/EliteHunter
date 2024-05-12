@@ -26,7 +26,7 @@ public class BulletCtrl : MonoBehaviour
         if (collision.gameObject.tag != "Weapon")
         {
             photonView.RPC("InstantiateParticleEffects", RpcTarget.All);
-            if (collision.gameObject.tag != "PlayerBody")
+            if (photonView.IsMine && collision.gameObject.tag != "PlayerBody")
             {
                 PhotonNetwork.Destroy(gameObject);
             }

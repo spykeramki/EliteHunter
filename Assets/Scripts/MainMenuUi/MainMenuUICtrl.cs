@@ -203,6 +203,17 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         CreateRoom(roomDetailsCtrl.RoomName);
     }
 
+    public void OnClickSinglePlayerBtn()
+    {
+        List<GameObject> objectToBeInactive = new List<GameObject>
+        {
+            backBtnGo,
+            playBtnsParentGo,
+        };
+        SetActivenessOfGos(objectToBeInactive, false);
+        CreateSinglePlayerRoom();
+    }
+
     public void OnClickJoinRoomBtn()
     {
         List<GameObject> objectToBeInactive = new List<GameObject>
@@ -354,7 +365,6 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     public void OnClickUiInputField()
     {
-        Debug.Log("clicked input field");
         overlayKeyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
     }
 
@@ -387,6 +397,15 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         roomOptions.IsOpen = true;
 
         PhotonNetwork.JoinOrCreateRoom(m_roomName, roomOptions, DataManager.Instance.CustomLobby);
+    }
+
+    private void CreateSinglePlayerRoom()
+    {
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 1;
+        roomOptions.IsVisible = false;
+
+        PhotonNetwork.JoinOrCreateRoom("SinglePlayer", roomOptions, DataManager.Instance.CustomLobby);
     }
 
     public override void OnCreatedRoom()

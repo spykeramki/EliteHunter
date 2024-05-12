@@ -26,6 +26,7 @@ public class GameUiOverCtrl : MonoBehaviour
         timeText.text = m_uiData.time.ToString();
         gameObject.SetActive(true);
         gameOverBtnsParentGo.SetActive(true);
+        GameManager.Instance.mainUi.SetActive(true);
     }
 
     public void OnClickHomeBtn()

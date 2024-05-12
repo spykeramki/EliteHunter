@@ -23,7 +23,7 @@ public class VRFootIK : MonoBehaviour
 
     private void OnAnimatorIK(int layerIndex)
     {
-        Vector3 rightFootPos = _anim.GetIKPosition(AvatarIKGoal.RightFoot);
+        /*Vector3 rightFootPos = _anim.GetIKPosition(AvatarIKGoal.RightFoot);
         RaycastHit hit;
 
         if(Physics.Raycast(rightFootPos + Vector3.up, Vector3.down, out hit))
@@ -54,6 +54,6 @@ public class VRFootIK : MonoBehaviour
         else
         {
             _anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0f);
-        }
+        }*/
     }
 }

@@ -3,6 +3,7 @@ using Meta.XR.MRUtilityKit;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
@@ -27,6 +28,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public GameUiOverCtrl gameUiOverCtrl;
 
+    public StartGameUiCtrl startGameUiCtrl;
+
+    public GameObject mainUi;
+
     private int _currentGameLevel = 0;
 
     private float _timeSpent = 0f;
@@ -47,11 +52,15 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
         rightHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, true); };
         rightHandGrabInteractor.WhenInteractableUnset.Action += (HandGrabInteractable interactable) => { OnInteractableUnSelected(interactable, true); };
         leftHandGrabInteractor.WhenInteractableSet.Action += (HandGrabInteractable interactable) => { OnInteractableSelected(interactable, false); };
         leftHandGrabInteractor.WhenInteractableUnset.Action += (HandGrabInteractable interactable) => { OnInteractableUnSelected(interactable, false); };
+        if (PhotonNetwork.IsMasterClient)
+        {
+            mainUi.SetActive(true);
+            startGameUiCtrl.SetDataInUI();
+        }
     }
 
     private void Update()
@@ -136,10 +145,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void StartGameOnMasterClient()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            StartGame();
-        }
+        StartGame();
     }
 
     public void StartGame(){
@@ -147,8 +153,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     public void StartNextLevel(){
-        _currentGameLevel ++;
-        if(_currentGameLevel > _maxLevel)
+        if (photonView.IsMine)
+        {
+            photonView.RPC("IncreaseCurrentLevel", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    private void IncreaseCurrentLevel()
+    {
+        _currentGameLevel++;
+        if (_currentGameLevel > _maxLevel)
         {
             isGameOver = true;
             gameUiOverCtrl.SetDataInUI(new GameUiOverCtrl.UiData()
@@ -159,7 +174,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            cubeSpawnerCtrl.SpawnCubesRandomly((int)(cubeSpawnerCtrl.CubesToCreate * 1.3));
+            if (PhotonNetwork.IsMasterClient)
+            {
+                cubeSpawnerCtrl.SpawnCubesRandomly((int)(cubeSpawnerCtrl.CubesToCreate * 1.3));
+            }
         }
     }
 

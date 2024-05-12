@@ -47,6 +47,8 @@ public class PlayerCtrl : MonoBehaviour
         playerStatsUiCtrl.SetShieldInUi(_shield);
         SetRoboCamCanvas(false);
         playerHudCanvas.worldCamera = GameObject.FindObjectOfType<OVRCameraRig>().centerEyeAnchor.GetComponent<Camera>();
+
+        playerHudCanvas.gameObject.SetActive(photonView.IsMine);
     }
 
     private void Update()
