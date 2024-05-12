@@ -8,6 +8,10 @@ public class PlayerRoboCamCtrl : MonoBehaviour
     private Animator _anim;
     public Vector2 speedVec;
 
+    public GameObject cameraGo;
+
+    public GameObject cinemachineVirtualCamGo;
+
     public float rotateSpeed;
 
     private bool _controlRobot = false;
@@ -61,5 +65,11 @@ public class PlayerRoboCamCtrl : MonoBehaviour
         else{
             _anim.SetBool("Open_Anim", true);  
         }
+    }
+
+    public void EnableOrDisableCamers(bool m_active)
+    {
+        cameraGo.SetActive(m_active);
+        cinemachineVirtualCamGo.SetActive(m_active);
     }
 }

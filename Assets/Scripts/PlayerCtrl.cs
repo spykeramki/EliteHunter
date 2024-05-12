@@ -27,6 +27,18 @@ public class PlayerCtrl : MonoBehaviour
 
     private bool isRobotView = false;
 
+    private float _timeSpent = 0f;
+    public float TimeSpent
+    {
+        get { return _timeSpent; }
+    }
+
+    private int _score = 0;
+    public int Score
+    {
+        get { return _score; }
+    }
+
     public Renderer playerMeshRenderer;
 
     [Serializable]
@@ -43,13 +55,9 @@ public class PlayerCtrl : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
+        if (photonView.IsMine)
         {
             Instance = this;
-        }
-        else if(Instance != this)
-        {
-            Destroy(this);
         }
     }
 
@@ -62,17 +70,23 @@ public class PlayerCtrl : MonoBehaviour
         playerHudCanvas.worldCamera = GameObject.FindObjectOfType<OVRCameraRig>().centerEyeAnchor.GetComponent<Camera>();
 
         playerHudCanvas.gameObject.SetActive(photonView.IsMine);
+
+        playerRoboCamCtrl.EnableOrDisableCamers(photonView.IsMine);
     }
 
     private void Update()
     {
 
-        if (OVRInput.GetDown(OVRInput.Button.One))
+        if (GameManager.Instance.IsGameStartedAndNotEnded())
         {
-            isRobotView = !isRobotView;
-            playerRoboCamCtrl.SetRobotControlStatus(isRobotView);
-            playerRoboCamCtrl.SetRobotToIdle();
-            PlayerCtrl.Instance.SetRoboCamCanvas(isRobotView);
+            if(OVRInput.GetDown(OVRInput.Button.One))
+            {
+                isRobotView = !isRobotView;
+                playerRoboCamCtrl.SetRobotControlStatus(isRobotView);
+                playerRoboCamCtrl.SetRobotToIdle();
+                SetRoboCamCanvas(isRobotView);
+            }
+            _timeSpent += Time.deltaTime;
         }
     }
 
@@ -92,6 +106,7 @@ public class PlayerCtrl : MonoBehaviour
             if(_health < 0)
             {
                 _health = 0;
+                GameManager.Instance.GameOver();
             }
             playerStatsUiCtrl.SetHealthInUi(_health);
             playerStatsUiCtrl.StartShieldDepletionEffect();
@@ -135,14 +150,20 @@ public class PlayerCtrl : MonoBehaviour
 
     public void SetMaterialOnPlayerChoice(string m_skin)
     {
+        photonView.RPC("SetMaterialOnPlayerChoiceRPC", RpcTarget.All, m_skin);
+    }
+
+    [PunRPC]
+    public void SetMaterialOnPlayerChoiceRPC(string m_skin)
+    {
         Material[] playerMat = playerMeshRenderer.materials;
-        switch(m_skin)
+        switch (m_skin)
         {
             case Constants.BLUE_SKIN:
                 playerMat[0] = playerMats.blueSkin;
                 break;
             case Constants.GREEN_SKIN:
-                playerMat[0]= playerMats.greenSkin;
+                playerMat[0] = playerMats.greenSkin;
                 break;
             case Constants.RED_SKIN:
                 playerMat[0] = playerMats.redSkin;
@@ -151,4 +172,8 @@ public class PlayerCtrl : MonoBehaviour
         playerMeshRenderer.materials = playerMat;
     }
 
+    public void IncreaseScoreByOne()
+    {
+        _score++;
+    }
 }

@@ -34,13 +34,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private int _currentGameLevel = 0;
 
-    private float _timeSpent = 0f;
-
-    private int _score= 0;
-
-    private int _maxLevel = 3;
+    private int _maxLevel = 5;
 
     private bool isGameOver = false;
+
+    public bool IsGameStarted = false;
 
     public int CurrentGameLevel{
         get { return _currentGameLevel; }
@@ -59,21 +57,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             mainUi.SetActive(true);
-            startGameUiCtrl.SetDataInUI();
+            startGameUiCtrl.SetDataInUI(DataManager.Instance.IsSinglePlayer);
         }
     }
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+        if (IsGameStartedAndNotEnded())
         {
-            Fire?.Invoke();
+            if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
+            {
+                Fire?.Invoke();
+            }
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+            {
+                SecondaryFire?.Invoke();
+            }
         }
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
-        {
-            SecondaryFire?.Invoke();
-        }
-        _timeSpent += Time.deltaTime;
     }
     private void OnInteractableSelected(HandGrabInteractable interactable, bool isRightHand)
     {
@@ -149,17 +149,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void IncreaseCurrentLevel()
+    public void IncreaseCurrentLevel()
     {
         _currentGameLevel++;
         if (_currentGameLevel > _maxLevel)
         {
-            isGameOver = true;
-            gameUiOverCtrl.SetDataInUI(new GameUiOverCtrl.UiData()
-            {
-                score = _score,
-                time = (int)_timeSpent
-            });
+            GameOver();
         }
         else
         {
@@ -170,13 +165,36 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void IncreaseScoreByOne()
+    public void GameOver()
     {
-        _score++;
+        isGameOver = true;
+        gameUiOverCtrl.SetDataInUI(new GameUiOverCtrl.UiData()
+        {
+            score = PlayerCtrl.Instance.Score,
+            time = (int)PlayerCtrl.Instance.TimeSpent
+        });
     }
+
+    
 
     public void OnDestroOfCube(){
         cubeSpawnerCtrl.OnDestroyEachCube(StartGame);
-        IncreaseScoreByOne();
+        PlayerCtrl.Instance.IncreaseScoreByOne();
+    }
+
+    public bool IsGameStartedAndNotEnded()
+    {
+        return IsGameStarted && !isGameOver;
+    }
+
+    public void SetGameStarted(bool m_active)
+    {
+        photonView.RPC("SetGameStartedRPC", RpcTarget.All, m_active);
+    }
+
+    [PunRPC]
+    public void SetGameStartedRPC(bool m_active)
+    {
+        IsGameStarted = m_active;
     }
 }

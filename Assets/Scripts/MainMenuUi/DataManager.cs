@@ -45,6 +45,7 @@ public class DataManager : MonoBehaviourPunCallbacks
         get { return _isNewPlayer; }
     }
 
+    public bool IsSinglePlayer = false;
 
     #region MULTIPLAYER
     private TypedLobby customLobby = new TypedLobby("eliteHunterLobby", LobbyType.Default);

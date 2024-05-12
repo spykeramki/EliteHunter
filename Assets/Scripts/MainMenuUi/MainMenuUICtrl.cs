@@ -174,6 +174,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
             backBtnGo
         };
         backFunctionQueue.Push(objectToActive);
+        DataManager.Instance.IsSinglePlayer = false;
         StartCoroutine(SetActivenessOfGosAfterATime(objectToActive, true));
     }
 
@@ -216,6 +217,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
             playBtnsParentGo,
         };
         SetActivenessOfGos(objectToBeInactive, false);
+        DataManager.Instance.IsSinglePlayer = true;
         CreateSinglePlayerRoom();
     }
 
