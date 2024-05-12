@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class WeaponCtrl : MonoBehaviour
 {
-    public BulletCtrl paintBall;
+    public GameObject paintBall;
 
     public Transform bulletSpawnPoint;
 
@@ -12,8 +13,9 @@ public class WeaponCtrl : MonoBehaviour
 
     public void SpawnBall()
     {
-        BulletCtrl ball = Instantiate(paintBall, bulletSpawnPoint.position, Quaternion.identity);
+        GameObject ball = PhotonNetwork.Instantiate(paintBall.name, bulletSpawnPoint.position, Quaternion.identity);
+        BulletCtrl ballCtrl = ball.GetComponent<BulletCtrl>();
 
-        ball.RigidBody.velocity = bulletSpawnPoint.forward * bulletSpeed;
+        ballCtrl.RigidBody.velocity = bulletSpawnPoint.forward * bulletSpeed;
     }
 }

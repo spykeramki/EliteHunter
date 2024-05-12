@@ -14,11 +14,16 @@ public class PlayerCtrl : MonoBehaviour
 
     public PlayerStatsUiCtrl playerStatsUiCtrl;
 
+    public Canvas playerHudCanvas;
+
+    public PlayerRoboCamCtrl playerRoboCamCtrl;
     private float shieldRegenerationSpeed = 5f;
 
     private float _health = 100f;
 
     private float _shield = 100f;
+
+    private bool isRobotView = false;
 
     private void Awake()
     {
@@ -38,6 +43,19 @@ public class PlayerCtrl : MonoBehaviour
         playerStatsUiCtrl.SetHealthInUi(_health);
         playerStatsUiCtrl.SetShieldInUi(_shield);
         SetRoboCamCanvas(false);
+        playerHudCanvas.worldCamera = GameObject.FindObjectOfType<OVRCameraRig>().centerEyeAnchor.GetComponent<Camera>();
+    }
+
+    private void Update()
+    {
+
+        if (OVRInput.GetDown(OVRInput.Button.One))
+        {
+            isRobotView = !isRobotView;
+            playerRoboCamCtrl.SetRobotControlStatus(isRobotView);
+            playerRoboCamCtrl.SetRobotToIdle();
+            PlayerCtrl.Instance.SetRoboCamCanvas(isRobotView);
+        }
     }
 
     public void SetRoboCamCanvas(bool isActive){

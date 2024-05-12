@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class BulletCtrl : MonoBehaviour
 {
     private Rigidbody rb;
+
+    public PhotonView photonView;
 
     public Rigidbody RigidBody
     {
@@ -18,16 +21,21 @@ public class BulletCtrl : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag != "Weapon")
         {
-            Instantiate(particleEffect, transform.position, Quaternion.identity);
-            if(collision.gameObject.tag != "PlayerBody")
+            photonView.RPC("InstantiateParticleEffects", RpcTarget.All);
+            if (collision.gameObject.tag != "PlayerBody")
             {
-                Destroy(gameObject);
+                PhotonNetwork.Destroy(gameObject);
             }
         }
+    }
+
+    [PunRPC]
+    void InstantiateParticleEffects()
+    {
+        Instantiate(particleEffect, transform.position, Quaternion.identity);
     }
 }

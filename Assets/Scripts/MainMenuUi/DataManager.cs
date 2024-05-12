@@ -55,6 +55,8 @@ public class DataManager : MonoBehaviourPunCallbacks
 
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
+    private GameObject spawnedPlayerModel;
+
     #endregion
 
     private void Awake()
@@ -74,7 +76,7 @@ public class DataManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        
+        SceneManager.sceneLoaded += OnSceneLoad;
     }
 
     public void SetNewPlayerData(string  m_playerName, string m_skin)
@@ -126,6 +128,15 @@ public class DataManager : MonoBehaviourPunCallbacks
         return cachedRoomList.ContainsKey(m_room);
     }
 
+    private void OnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        if(scene.name == Constants.GAME_SCENE)
+        {
+            spawnedPlayerModel = PhotonNetwork.Instantiate(Constants.PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
+            Debug.Log(PhotonNetwork.CurrentRoom.Name + " current client room name");
+        }
+    }
+
 
     #region
     public void JoinLobby()
@@ -168,6 +179,37 @@ public class DataManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         cachedRoomList.Clear();
+    }
+
+
+    public void JoinRoom(RoomInfo m_roomInfo)
+    {
+        PhotonNetwork.JoinRoom(m_roomInfo.Name);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
+
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        PhotonNetwork.LoadLevel(Constants.GAME_SCENE);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        base.OnPlayerLeftRoom(newPlayer);
+        PhotonNetwork.LoadLevel(Constants.GAME_SCENE);
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        PhotonNetwork.LoadLevel(Constants.START_MENU_SCENE);
+        PhotonNetwork.Destroy(spawnedPlayerModel);
     }
     #endregion
 }

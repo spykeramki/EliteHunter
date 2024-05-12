@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
+using Photon.Pun;
 
 public class BodyCtrl : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class BodyCtrl : MonoBehaviour
     public Mapping leftController;
 
     public Transform headConstraint;
+
+    public PhotonView photonView;
     private Vector3 offset;
 
     private OVRCameraRig ovrCameraRig;
@@ -33,21 +36,26 @@ public class BodyCtrl : MonoBehaviour
     void Start()
     {
         ovrCameraRig = GameObject.FindObjectOfType<OVRCameraRig>();
-        Debug.Log(ovrCameraRig.gameObject.name + " ovrCameraRig name");
-        headset.vrTarget = ovrCameraRig.centerEyeAnchor;
-        rightController.vrTarget = ovrCameraRig.rightHandAnchor;
-        leftController.vrTarget = ovrCameraRig.leftHandAnchor;
-        offset = transform.position - headConstraint.position;
+        if (photonView.IsMine)
+        {
+            headset.vrTarget = ovrCameraRig.centerEyeAnchor;
+            rightController.vrTarget = ovrCameraRig.rightHandAnchor;
+            leftController.vrTarget = ovrCameraRig.leftHandAnchor;
+            offset = transform.position - headConstraint.position;
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = headConstraint.position + offset;
-        transform.forward = Vector3.ProjectOnPlane(headConstraint.forward, Vector3.up).normalized;
+        if (photonView.IsMine)
+        {
+            transform.position = headConstraint.position + offset;
+            transform.forward = Vector3.ProjectOnPlane(headConstraint.forward, Vector3.up).normalized;
 
-        headset.MapTargets();
-        rightController.MapTargets();
-        leftController.MapTargets();
+            headset.MapTargets();
+            rightController.MapTargets();
+            leftController.MapTargets();
+        }
     }
 }

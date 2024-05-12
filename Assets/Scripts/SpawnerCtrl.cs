@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpawnerCtrl : MonoBehaviour
 {
-    public FindSpawnPositions cubeSpawner;
+    public FindSpawnPositionsAndInstantiateWithPhoton cubeSpawner;
 
     private int _cubesToCreate = 5;
     public int CubesToCreate{
@@ -20,7 +20,6 @@ public class SpawnerCtrl : MonoBehaviour
     }
 
     public void OnDestroyEachCube( Action spawnNextLevelCubes){
-        Debug.Log(transform.childCount + " transform.childCount");
         if(transform.childCount <= 1){
             spawnNextLevelCubes?.Invoke();
         }

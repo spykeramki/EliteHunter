@@ -1101,8 +1101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformComp: {fileID: 924535998167400380}
-  RroboCamCanvasGo: {fileID: 0}
   playerStatsUiCtrl: {fileID: 1969376408221505908}
+  playerHudCanvas: {fileID: 17198011452918223}
 --- !u!54 &4614199111758785035
 Rigidbody:
   m_ObjectHideFlags: 0

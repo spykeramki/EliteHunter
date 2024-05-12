@@ -20,6 +20,8 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
 
     public RoomDetailsCtrl roomDetailsCtrl;
 
+    public JoinRoomCtrl joinRoomCtrl;
+
     [Serializable]
     public struct MainMenuUiGos
     {
@@ -187,7 +189,12 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         backFunctionQueue.Push(objectToBeInactive);
         SetActivenessOfGos(objectToBeInactive, false);
 
-        //SetData In Rooms List UI
+        List<RoomInfo> roomInfos = new List<RoomInfo>();
+        foreach (KeyValuePair<string, RoomInfo> item in DataManager.Instance.GetRoomsData())
+        {
+            roomInfos.Add(item.Value);
+        }
+        joinRoomCtrl.CreateAndSetJoinRoomItem(roomInfos);
 
         List<GameObject> objectToActive = new List<GameObject>
         {
@@ -291,7 +298,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         };
         SetActivenessOfGos(objectToHide, false);
 
-        loadingScreenCtrl.ShowLoadingScreen("01Main");
+        loadingScreenCtrl.ShowLoadingScreen(Constants.GAME_SCENE);
     }
 
     public void QuitGame()
@@ -342,6 +349,7 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         ShowMainMenu();
     }
 
+
     private void CreateRoom(string m_roomName)
     {
         RoomOptions roomOptions = new RoomOptions();
@@ -349,35 +357,18 @@ public class MainMenuUICtrl : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = true;
         roomOptions.IsOpen = true;
 
-        PhotonNetwork.CreateRoom(m_roomName, roomOptions, DataManager.Instance.CustomLobby);
+        PhotonNetwork.JoinOrCreateRoom(m_roomName, roomOptions, DataManager.Instance.CustomLobby);
     }
 
     public override void OnCreatedRoom()
     {
         Debug.LogErrorFormat("Room Created " + PhotonNetwork.CurrentRoom.Name);
-        PhotonNetwork.LoadLevel("01Main");
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
         OnClickBackBtn();
-    }
-
-    private void JoinRoom(string m_roomName)
-    {
-        PhotonNetwork.JoinRoom(m_roomName);
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.LogErrorFormat("Room creation failed with error code {0} and error message {1}", returnCode, message);
-
-    }
-
-    public override void OnJoinedRoom()
-    {
-        // joined a room successfully, JoinOrCreateRoom leads here on success
     }
     #endregion
 

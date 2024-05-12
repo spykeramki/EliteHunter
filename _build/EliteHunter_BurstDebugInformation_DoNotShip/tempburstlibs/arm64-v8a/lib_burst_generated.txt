@@ -9,6 +9,7 @@ Library: C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Temp\BurstOutput\tempb
 --target-framework=NetFramework
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Cinemachine;
+--assembly-defines=IngameDebugConsole.Runtime;
 --assembly-defines=Meta.XR.Audio;
 --assembly-defines=Meta.XR.BuildingBlocks;
 --assembly-defines=meta.xr.mrutilitykit;
@@ -26,6 +27,9 @@ Library: C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Temp\BurstOutput\tempb
 --assembly-defines=PhotonUnityNetworking.Demos;
 --assembly-defines=PhotonUnityNetworking;
 --assembly-defines=PhotonUnityNetworking.Utilities;
+--assembly-defines=PhotonVoice.API;
+--assembly-defines=PhotonVoice;
+--assembly-defines=PhotonVoice.PUN;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
@@ -45,7 +49,6 @@ Library: C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Temp\BurstOutput\tempb
 --assembly-defines=UnityEngine;
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Temp\Burst
---debug=Full
 --key-folder=C:/Program Files/Unity/Hub/Editor/2022.3.18f1/Editor/Data/PlaybackEngines/AndroidPlayer
 --decode-folder=C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Library\Burst
 --output=C:\Users\SpykeRamki\Documents\GitHub\EliteHunter\Temp\BurstOutput\tempburstlibs\arm64-v8a\lib_burst_generated

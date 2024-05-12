@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Photon.Pun;
 
 public class EnemyCubeCtrl : MonoBehaviour
 {
@@ -18,5 +19,13 @@ public class EnemyCubeCtrl : MonoBehaviour
 
     private void OnDestroy(){
         GameManager.Instance.OnDestroOfCube();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 }
